@@ -1,0 +1,227 @@
+<html>
+<head>
+  <title>radare</title>
+  <script src="/r/js/index.js"></script>
+  <meta charset="utf-8">
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="fira.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+  <![endif]-->
+  <script src="js/index.js"></script>
+  <link rel="shortcut icon" href="../favicon.ico">
+</head>
+<body>
+<div class="topbar">
+<table >
+<tr>
+<td style="padding:0.6em;margin:0px">
+<a class="rtopbutton" href="index.html"><img width="100" height="40" src="r2logo.png" alt="radare.org"></a>
+</td>
+<td width="100%" style="text-align:right;font-family:montserrat;vertical-align:middle">
+<!--
+<a class="link" href="#install">INSTALL</a>
+&nbsp;
+&nbsp;
+&nbsp;
+-->
+
+<div class="topbut">
+<br />
+<!--
+<div class="botton">
+<a class="link" target=_blank href="https://radareorg.github.io/radare2book/index.html/">DOCS</a>
+</div>
+-->
+<div class="botton">
+<a class="link" href="https://github.com/radareorg" target=_blank href="">GitHub</a>
+</div>
+<!--
+/
+<div class="botton">
+<a class="link" target=_blank href="https://t.me/radare/">CHAT</a>
+</div>
+/
+<div class="botton">
+<a href="/con/2019" target="_blank" target=_blank>CONF</a>
+</div>
+-->
+</div>
+<!--
+<a title="donate" href="/con/2019" target=_blank>DONATE</a>
+&nbsp;
+&nbsp;
+&nbsp;
+-->
+</td>
+</tr>
+</table>
+</div>
+
+<center>
+<div style="width:100%;overflow-x:auto;padding-top:6em;padding-bottom:0em">
+<table style="max-width:800px;width:100%;font-family:montserrat;text-align:center;font-weight:bold;line-height:2em">
+<tr>
+<td><a href="index.html"><img class=button2 width="240px" src="img/typical.jpg"></a><br/>Radare2</td>
+<td><a href="r2pipe.html"><img style="opacity:0.3;" class=button2 width="240px" src="img/r2pipe.png"></a><br />R2Pipe</td>
+<td><a href="iaito.html"><img style="opacity:0.3;" class=button2 width="240px" src="img/iaito.png"></a><br />iaito</td>
+</tr>
+</table>
+</div>
+<h1>radare2</h1>
+<p>
+A free/libre toolchain for easing several low level tasks like forensics, software reverse engineering, exploiting, debugging, ...
+</p>
+<p>
+It is composed by a bunch of libraries (which are extended with plugins) and programs that can be automated with almost any programming language.
+</p>
+<h2>Installation</h2>
+<p>
+It is recommended to install it from git, alternatively you can pick the last release (every 6 weeks) from <a href="https://github.com/radare/radare2/releases">Github</a>.
+</p>
+<p>
+Release builds are available <a href="https://radare.mikelloc.com">here</a>.
+</p>
+<div class="console">
+$ git clone https://github.com/radareorg/radare2
+$ cd radare2 ; sys/install.sh
+</div>
+<p>
+In case of build problems try the following:
+</p>
+<div class="console">
+$ sudo make purge
+$ rm -rf shlr/capstone
+$ git clean -xdf
+$ git reset --hard @~50
+$ sys/install.sh
+</div>
+
+<h2>Features</h2>
+<p>
+- Batch, commandline, visual and panels interactive modes<br />
+- Embedded webserver with js scripting and webui<br/>
+- Assemble and disassemble a large list of CPUs<br />
+- Runs on Windows and any other UNIX flavour out there<br />
+- Analyze and emulate code with ESIL<br />
+- Native debugger and GDB, WINDBG, QNX and FRIDA<br />
+- Navigate ascii-art control flow graphs<br />
+- Ability to patch binaries, modify code or data<br />
+- Search for patterns, magic headers, function signatures<br />
+- Easy to extend and modify<br />
+- Commandline, C API, script with r2pipe in any language<br />
+</p>
+
+<h2>Usage</h2>
+<p>
+Radare2 can be used in many ways, from commandline or shellscripts by calling the individual tools:
+</p>
+<div class="console">
+<b>$ rasm2 -a arm -b 32 -d `rasm2 -a arm -b 32 nop`
+$ rabin2 -Ss /bin/ls  # list symbols and sections
+$ rahash2 -a md5 /bin/ls
+$ rafind2 -x deadbeef bin</b>
+</div>
+<p>
+All the programs are also accessible as commands inside r2:
+</p>
+<div class="console">
+<b>$ r2 -
+&gt; pa nop</b>
+90
+<b>&gt; pad 90</b>
+nop
+</div>
+<p>
+Those are some common commands you may use in your daily life:
+</p>
+<div class="console">
+<b>$ r2 /bin/ls</b>
+&gt; aaa    # analyze all the things
+&gt; is     # list symbols
+&gt; afl    # list functions found
+&gt; pdf    # disassemble function
+&gt; s &lt;tab&gt;# seek to address
+&gt; v      # enter visual panels mode
+</div>
+
+<h2>Debugger</h2>
+<p>
+The IO layer selected by the file URI when opening a file in r2 can be anything, from local file, remote r2 shell, a full disk, another process memory, etc.
+</p>
+<p>
+To simplify things, the <b>-d</b> flag will use the dbg:// uri to spawn or attach to a process to read/write its memory, modify registers and inspect the execution flow. It's a low level debugger, don't worry, we don't try to replace gdb/lldb.
+</p>
+<div class="console">
+<b>$ r2 -d gdb://127.0.0.1</b>
+&gt; ds          # step into
+&gt; dso         # step over
+&gt; dr=         # show registers in columns
+&gt; dbt         # show backtrace
+&gt; dsu entry0  # continue until entrypoint
+&gt; dr rax=33   # change value of register
+&gt; pxr@rsp     # inspect stack
+&gt; drr         # periscoped register values
+</div>
+
+<h2>Plugins</h2>
+
+<p>
+Using the integrated package manager you can easily install external plugins from different sources, most interesting ones are the native ghidra decompiler, the r2dec decompiler and the frida integration. But there are more!
+</p>
+<div class="console">
+<b>$ r2pm update
+$ r2pm -i r2ghidra r2dec r2frida</b>
+</div>
+
+<h2>Frida</h2>
+<p>
+The favourite in-process debugger/tracer for many people is also available within r2 after installing the <b>r2frida</b> plugin you may be able to attach/spawn to a local or remote program via usb or tcp and be able to read/write process memory in live.
+</p>
+<p>
+One of the main benefits of using r2frida instead of frida is, despite not depending on Python, the fact that you can type short commands instead of typing multiple lines of Javascript.
+</p>
+<p>
+- Access remote filesystems<br/>
+- Modify filedescriptors<br />
+- Breakpoints (Like in DWARF)<br />
+- Load/Unload agent scripts as plugins<br/>
+- Sybolicate from local bins, scripts or runtime info<br/>
+- Supports macOS/iOS/Linux/Android/QNX/Windows<br />
+</p>
+
+<div class="console">
+<b>$ r2 frida:///bin/ls
+&gt; \dc         # continue the execution
+&gt; \dd         # list file descriptors
+&gt; \dm         # show process memory maps
+&gt; \dmm        # show modules mapped
+&gt; \dl foo.so  # load a shlib
+&gt; \dt write   # trace every call to 'write'
+&gt; \isa read   # find where's the read symbol located
+&gt; \ii         # list imports off the current module
+&gt; \dxc exit 0 # call 'exit' symbol with argument 0
+</div>
+
+<h2>Documentation</h2>
+<p>
+
+Join the <a href="https://t.me/radare">Telegram / IRC</a> channels and feel free to ask anything.
+
+In addition you can read <a href="https://book.rada.re">The Book</a>
+
+but everything in r2 is self-documented (just append the '?' char) or read the manpages/-h:
+</p>
+<p>
+You can use the HUD mode to interactively browse all the commands inside r2 using this oneliner:
+</p>
+<div class="console">
+<b>$ r2 -Qc'?*~...' --</b>
+</div>
+</div>
+</center>
+</body>
+</html>
